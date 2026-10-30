@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D2D52">
+<title>Pharmacy Workflow Lab</title>
+<meta name="description" content="14 workflow งานเภสัชกรรมโรงพยาบาล พร้อม Context จำลองและคำสั่ง R–T–F สำหรับ Workshop AI for Smart Pharmacy Executives 2026 โดย ดร.ภก.วิรุณ เวชศิริ">
+<meta name="author" content="ดร.ภก.วิรุณ เวชศิริ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: AI Playground family — navy hero with the bear, the harness equation as a strip, a workflow map of 14 cases, then each case as a lab card: chain of tasks → harness → context → R–T–F prompts → verify → round 2 */
+:root{
+  --paper:#F3F5F9; --card:#FFFFFF; --ink:#16223A; --muted:#566178; --line:#DCE1EA;
+  --navy:#1D2D52; --navy-ink:#FFFFFF; --honey:#D9A13B; --honey-soft:#FBF1DC; --honey-ink:#7A5110;
+  --accent:#1F6F68; --accent-ink:#FFFFFF; --soft:#E2EFEC;
+  --r:#3B4CC0; --t:#1F6F68; --f:#A85A0C; --x:#6B4FA0; --warn:#9A3412; --warn-bg:#FDF0E7;
+  --hero-a:#1D2D52; --hero-b:#2C4377; --hero-fg:#FFFFFF; --hero-muted:#C9D3EA;
+  --code-bg:#F6F7FA; --tag-ai:#E4E8F7; --tag-ai-ink:#2A3A8C; --tag-hu:#FBE7E0; --tag-hu-ink:#8A2E12; --tag-dr:#E2EFEC; --tag-dr-ink:#14524D;
+  --display:'Bai Jamjuree','IBM Plex Sans Thai',Tahoma,sans-serif;
+  --body:'IBM Plex Sans Thai',Tahoma,'Noto Sans Thai',sans-serif;
+  --mono:'IBM Plex Mono','IBM Plex Sans Thai',Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F1522; --card:#172033; --ink:#E7EBF3; --muted:#9BA6BD; --line:#2A3550;
+  --navy:#AFC2F0; --navy-ink:#0F1522; --honey:#E8B75A; --honey-soft:#2B2414; --honey-ink:#F1CD86;
+  --accent:#4CC2B3; --accent-ink:#06201C; --soft:#173430;
+  --r:#9DA8FF; --t:#5CCFBC; --f:#F0A65A; --x:#C3A8F0; --warn:#F7A27A; --warn-bg:#2E1F17;
+  --hero-a:#16233F; --hero-b:#1F3260; --hero-fg:#FFFFFF; --hero-muted:#B9C5E2;
+  --code-bg:#111A2B; --tag-ai:#1E2A55; --tag-ai-ink:#B7C2FF; --tag-hu:#3A2018; --tag-hu-ink:#F7B59A; --tag-dr:#173430; --tag-dr-ink:#7FDCCD; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1522; --card:#172033; --ink:#E7EBF3; --muted:#9BA6BD; --line:#2A3550;
+  --navy:#AFC2F0; --navy-ink:#0F1522; --honey:#E8B75A; --honey-soft:#2B2414; --honey-ink:#F1CD86;
+  --accent:#4CC2B3; --accent-ink:#06201C; --soft:#173430;
+  --r:#9DA8FF; --t:#5CCFBC; --f:#F0A65A; --x:#C3A8F0; --warn:#F7A27A; --warn-bg:#2E1F17;
+  --hero-a:#16233F; --hero-b:#1F3260; --hero-fg:#FFFFFF; --hero-muted:#B9C5E2;
+  --code-bg:#111A2B; --tag-ai:#1E2A55; --tag-ai-ink:#B7C2FF; --tag-hu:#3A2018; --tag-hu-ink:#F7B59A; --tag-dr:#173430; --tag-dr-ink:#7FDCCD; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px 48px}
+h1,h2,h3,h4{font-family:var(--display);text-wrap:balance;line-height:1.25}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--honey);outline-offset:2px}
+/* hero */
+.hero{position:relative;overflow:hidden;border-radius:20px;color:var(--hero-fg);background:linear-gradient(135deg,var(--hero-a),var(--hero-b));padding:22px 20px 0;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:end}
+.hero::before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(232,183,90,.35),rgba(232,183,90,0) 70%)}
+.hero .txt{position:relative;padding-bottom:20px;min-width:0}
+.eyebrow{font-family:var(--display);font-weight:600;font-size:.8rem;letter-spacing:.08em;color:#E8B75A}
+.hero h1{font-weight:700;font-size:clamp(1.6rem,5.4vw,2.3rem);margin:.25rem 0 .45rem}
+.hero p{margin:0;color:var(--hero-muted);font-size:.98rem;max-width:40ch}
+.hero .by{margin-top:12px;font-size:.88rem;color:var(--hero-fg)}
+.hero img{position:relative;width:clamp(118px,28vw,176px);height:auto;display:block;align-self:end;filter:drop-shadow(0 6px 14px rgba(0,0,0,.28))}
+/* equation */
+.eq{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:16px 0 4px;font-family:var(--display);font-weight:600}
+.eq span{padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:.95rem}
+.eq .res{background:var(--navy);color:var(--navy-ink);border-color:var(--navy)}
+.eq .op{border:0;background:none;padding:0 2px;color:var(--muted)}
+.eq .hi{border-color:var(--honey);background:var(--honey-soft);color:var(--honey-ink)}
+.section{margin-top:28px}
+.section>h2{font-size:1.3rem;margin:0 0 8px}
+.lead{color:var(--muted);margin:0 0 12px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.steps{counter-reset:s;list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+.steps li::before{content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--navy);color:var(--navy-ink);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:.9rem}
+.safety{border-left:0;background:var(--warn-bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px}
+.safety h3{margin:0 0 6px;font-size:1rem;color:var(--warn)}
+.safety ul{margin:0;padding-left:20px}
+.tags-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:.85rem}
+.tag{display:inline-block;font-family:var(--display);font-weight:600;font-size:.78rem;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.tag.ai{background:var(--tag-ai);color:var(--tag-ai-ink)}
+.tag.dr{background:var(--tag-dr);color:var(--tag-dr-ink)}
+.tag.hu{background:var(--tag-hu);color:var(--tag-hu-ink)}
+/* map */
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.filters button{font:inherit;font-family:var(--display);font-weight:600;font-size:.88rem;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--navy);color:var(--navy-ink);border-color:var(--navy)}
+.map{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:620px){.map{grid-template-columns:1fr}}
+.map a{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:center;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.map a:hover{border-color:var(--navy)}
+.map .n{width:36px;height:36px;border-radius:10px;background:var(--honey-soft);color:var(--honey-ink);font-family:var(--display);font-weight:700;display:grid;place-items:center}
+.map b{font-family:var(--display);font-weight:600;display:block;line-height:1.3}
+.map small{color:var(--muted)}
+/* case card */
+.case{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:18px;overflow:hidden;scroll-margin-top:12px}
+.case-h{padding:16px 16px 12px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.case-h .n{width:46px;height:46px;border-radius:12px;background:var(--navy);color:var(--navy-ink);font-family:var(--display);font-weight:700;font-size:1.15rem;display:grid;place-items:center}
+.case-h .g{font-family:var(--display);font-weight:600;font-size:.8rem;letter-spacing:.06em;color:var(--honey-ink)}
+.case-h h3{margin:2px 0 4px;font-size:1.22rem}
+.case-h p{margin:0;color:var(--muted);font-size:.95rem}
+.case-b{padding:14px 16px 18px;display:grid;gap:16px}
+.case-b h4{margin:0 0 8px;font-size:1rem;display:flex;align-items:center;gap:8px}
+.case-b h4 .k{font-size:.75rem;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.chain .t{flex:1 1 150px;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--paper);font-size:.9rem;display:grid;gap:4px;align-content:start}
+.chain .t b{font-family:var(--display);font-weight:600;font-size:.82rem;color:var(--muted)}
+.harness{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+@media (max-width:620px){.harness{grid-template-columns:1fr}}
+.harness div{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.9rem}
+.harness b{display:block;font-family:var(--display);font-size:.78rem;letter-spacing:.06em;color:var(--honey-ink)}
+pre.ctx{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--mono);font-size:.8rem;line-height:1.55;overflow-x:auto;white-space:pre;max-height:340px;overflow-y:auto}
+.ctxnote{font-size:.85rem;color:var(--muted);margin:6px 0 0}
+.prompt{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px}
+.prompt .ph{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--display);font-weight:600}
+.prompt .ph .tn{color:var(--muted);font-size:.85rem}
+.rtf{display:grid;gap:6px;font-size:.93rem}
+.rtf div{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start}
+.rtf i{font-style:normal;font-family:var(--display);font-weight:700;font-size:.8rem;width:26px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff}
+.rtf .R i{background:var(--r)} .rtf .T i{background:var(--t)} .rtf .F i{background:var(--f)} .rtf .X i{background:var(--x)}
+:root[data-theme="dark"] .rtf i{color:#0F1522}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .rtf i{color:#0F1522}}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button.copy{font:inherit;font-family:var(--display);font-weight:600;font-size:.92rem;background:var(--navy);color:var(--navy-ink);border:0;border-radius:10px;padding:9px 14px;cursor:pointer;min-height:42px}
+button.copy.alt{background:transparent;color:var(--navy);border:1.5px solid var(--navy)}
+button.copy.ok{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.verify{background:var(--warn-bg);border-radius:12px;padding:12px 14px}
+.verify h4{color:var(--warn)}
+.verify ul,.disc ul{margin:0;padding-left:20px}
+details.ans{margin-top:8px}
+details.ans summary{cursor:pointer;font-family:var(--display);font-weight:600;color:var(--warn)}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:620px){.two{grid-template-columns:1fr}}
+.mini{border:1px solid var(--line);border-radius:12px;padding:12px}
+.mini p{margin:0;font-size:.93rem}
+.top{display:inline-block;margin-top:4px;font-size:.85rem}
+.credit{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:28px}
+.credit img{width:64px;height:auto;flex:none}
+.credit p{margin:0;font-size:.92rem}
+.credit .s{color:var(--muted);font-size:.82rem}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:var(--navy-ink);padding:10px 16px;border-radius:999px;font-family:var(--display);font-weight:600;z-index:20}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <div class="txt">
+    <div class="eyebrow">UHOSNET · AI FOR SMART PHARMACY EXECUTIVES 2026</div>
+    <h1>Pharmacy Workflow Lab</h1>
+    <p>14 workflow ของเภสัชกรโรงพยาบาล แตกเป็น task พร้อม Context จำลอง และคำสั่ง R–T–F ให้กลุ่มลองรัน วิจารณ์ และปรับเอง</p>
+    <p class="by">ดร.ภก.วิรุณ เวชศิริ · คณะเภสัชศาสตร์ มหาวิทยาลัยธรรมศาสตร์</p>
+  </div>
+  <img src="assets/mascot.webp" alt="อ.หมี มาสคอตของผู้สอน">
+</header>
+
+<div class="eq" aria-label="สมการผลลัพธ์ที่ดี">
+  <span class="res">ผลลัพธ์ที่ดี</span><span class="op">=</span>
+  <span>Model</span><span class="op">+</span><span class="hi">Prompt</span><span class="op">+</span><span class="hi">Context</span><span class="op">+</span><span>Tools</span><span class="op">+</span><span>Human in the loop</span>
+</div>
+<p class="lead">ทุก case ให้ครบทั้งสมการ: Prompt แบบ R–T–F, Context จำลองที่หน้าตาเหมือนของจริง, Model และ Tools ที่แนะนำ และจุดที่เภสัชกรต้องตรวจ</p>
+
+<section class="section" id="how">
+  <h2>วิธีเล่นใน 30 นาที</h2>
+  <div class="box">
+    <ol class="steps">
+      <li><span>กลุ่มเลือก 1 workflow จากแผนที่ด้านล่าง</span></li>
+      <li><span>กด <b>คัดลอก Prompt + Context</b> ของ Task 1 ไปวางในแอป AI ที่กลุ่มใช้ แล้วทำ Task ถัดไปในแชตเดิม</span></li>
+      <li><span>หาจุดที่ AI ผิดหรือพลาดกับดักในข้อมูล แล้วค่อยกดดูเฉลย</span></li>
+      <li><span>คุยกันว่าควรปรับ R, T หรือ F ตรงไหน แล้วรัน Round 2</span></li>
+      <li><span>ติดป้ายแต่ละ task ว่าใครทำ และเลือก 1 task ที่ควรเป็น Skill ใช้ซ้ำ</span></li>
+    </ol>
+    <div class="tags-legend"><span class="tag ai">AI วิเคราะห์</span><span class="tag dr">AI ช่วยร่าง</span><span class="tag hu">คนทำหรือคนตัดสิน</span></div>
+  </div>
+  <div class="safety">
+    <h3>Safety check ก่อนเริ่ม</h3>
+    <ul>
+      <li>ข้อมูลทุกชุดในหน้านี้เป็นข้อมูลสมมติ ชื่อบริษัท เกณฑ์ และตัวเลขแต่งขึ้นเพื่อการฝึก</li>
+      <li>เมื่อนำไปใช้กับงานจริง ห้ามใส่ชื่อ HN เลขบัตร หรือภาพหน้าจอ HIS ลง AI ที่เป็นบัญชีส่วนตัว</li>
+      <li>เนื้อหาทางคลินิกในตัวอย่างใช้เพื่อฝึกการสั่งงาน ต้องตรวจกับแหล่งอ้างอิงมาตรฐานก่อนใช้จริงทุกครั้ง</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="map">
+  <h2>แผนที่ workflow</h2>
+  <div class="filters" id="filters" role="group" aria-label="กรองตามสายงาน"></div>
+  <nav class="map" id="mapgrid" aria-label="รายการ workflow"></nav>
+</section>
+
+<div id="cases"></div>
+
+<div class="credit">
+  <img src="assets/mascot.webp" alt="">
+  <div>
+    <p><b>ดร.ภก.วิรุณ เวชศิริ</b> · คณะเภสัชศาสตร์ มหาวิทยาลัยธรรมศาสตร์</p>
+    <p>เอกสารประกอบการอบรม AI for Smart Pharmacy Executives 2026 · UHosNet · ห้ามนำไปเผยแพร่โดยไม่ได้รับอนุญาต</p>
+    <p class="s">ข้อมูลทุกชุดเป็นข้อมูลจำลอง · ชื่อเมนูและฟีเจอร์ของเครื่องมือ ณ ต.ค. 2569 · คลังคำสั่งเพิ่มเติม wirunw.github.io/aiplayground/work</p>
+  </div>
+</div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const G = {inv:'คลังยาและจัดซื้อ', qual:'ข้อมูล ตัวชี้วัด คุณภาพ', clin:'คลินิกและข้อมูลยา', svc:'บริการผู้ป่วย', mgmt:'บริหารและวิชาการ'};
+const CASES = [
+{
+ id:'c1', g:'inv', title:'ประมาณการสั่งซื้อยาก่อนขาดคราว', who:'หัวหน้างานคลังยา / เภสัชกรจัดซื้อ',
+ why:'ดึงข้อมูลจาก HIS และระบบบัญชีมาทำ Excel เอง ประมาณการไม่ทัน ยาขาดคราว',
+ chain:[['ตรวจความพร้อมของข้อมูล','ai'],['คำนวณวันคงคลังและจุดสั่งซื้อ','ai'],['ร่างบันทึกเสนอสั่งซื้อ','dr'],['หัวหน้าอนุมัติ','hu']],
+ h:{model:'รุ่นคิดลึก (Thinking) เพราะต้องคำนวณหลายขั้น',tools:'แนบไฟล์ / วางตาราง · ให้ AI รันโค้ดคำนวณ (Code execution หรือ Data analysis)',hitl:'สุ่มคำนวณซ้ำ 1 รายการ · หัวหน้าคลังอนุมัติก่อนออกใบสั่งซื้อ'},
+ ctx:`ข้อมูลยาคงคลัง ณ 30 ต.ค. 2569 (ข้อมูลจำลอง)
+ชื่อยา,หน่วยนับ,คงคลัง,ใช้_ก.ค.,ใช้_ส.ค.,ใช้_ก.ย.,ค้างรับ_PO,lead_time_วัน
+Amlodipine 5 mg tab,เม็ด,42000,30000,31500,29800,0,14
+Metformin 500 mg tab,เม็ด,55000,61000,59800,60500,60000,14
+Atorvastatin 40 mg tab,เม็ด,18000,24500,25100,24800,0,21
+Ceftriaxone 1 g inj,vial,950,1250,1310,2480,0,10
+Enoxaparin 40 mg inj,กล่อง,36,820,790,805,0,14
+Omeprazole 20 mg cap,แคปซูล,40000,35200,34900,35600,0,14
+Paracetamol 500 mg tab,เม็ด,120000,98000,101000,99500,0,7
+Insulin glargine pen,ปากกา,310,420,415,430,500,21
+Salbutamol MDI,หลอด,600,380,410,395,0,14
+Vancomycin 500 mg inj,vial,400,610,590,620,0,10
+หมายเหตุ: Enoxaparin 1 กล่อง = 10 syringe · ยอดใช้รายเดือนนับเป็น syringe
+นโยบาย: ต้องสั่งซื้อเมื่อวันคงคลัง < lead time + 14 วัน (safety stock)`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เภสัชกรผู้ดูแลข้อมูลคลังยาที่ละเอียดเรื่องหน่วยนับ',t:'ตรวจตารางยาคงคลังด้านล่างก่อนนำไปคำนวณ หาค่าที่หน่วยไม่ตรงกัน ค่าที่กระโดดผิดปกติ และช่องที่ขาด',f:'ตาราง 3 คอลัมน์: รายการยา · ปัญหาที่พบ · ควรแก้หรือถามใคร · ตามด้วยสรุป 2 บรรทัดว่าพร้อมคำนวณหรือไม่',x:'ห้ามแก้ตัวเลขเอง ถ้าไม่แน่ใจให้ตั้งเป็นคำถาม'},
+  {n:'Task 2',tag:'ai',r:'นักวิเคราะห์ข้อมูลคลังเวชภัณฑ์โรงพยาบาล',t:'คำนวณใช้เฉลี่ยต่อวันจาก 3 เดือน วันคงคลังที่เหลือ (แยกแบบไม่รวมและรวม PO ค้างรับ) แล้วชี้รายการที่ต้องสั่งซื้อตามนโยบาย โดยใช้หน่วยที่แก้แล้วจาก Task 1',f:'ตาราง: ยา · ใช้เฉลี่ย/วัน · วันคงคลัง · วันคงคลังรวม PO · ต้องสั่งไหม · ปริมาณแนะนำให้พอ 60 วัน · แสดงสูตรใต้ตาราง',x:'รันโค้ดคำนวณจริง ถ้ายอดใช้เดือนล่าสุดสูงกว่าค่าเฉลี่ยเกิน 30% ให้แยกแจ้งและคำนวณสองแบบ'},
+  {n:'Task 3',tag:'dr',r:'เภสัชกรจัดซื้อที่เขียนบันทึกข้อความราชการ',t:'ร่างบันทึกข้อความเสนอหัวหน้าฝ่ายเภสัชกรรม ขออนุมัติสั่งซื้อรายการที่ต้องสั่งจาก Task 2',f:'บันทึกข้อความ 1 หน้า: เรื่อง · เรียน · เหตุผล 3 ข้อ · ตารางรายการและปริมาณ · ข้อพิจารณา',x:'ใช้เฉพาะตัวเลขจาก Task 2 เว้นช่องราคาไว้ให้กรอก'}
+ ],
+ verify:['Enoxaparin คงคลัง 36 กล่อง = 360 syringe ใช้ราว 27 syringe/วัน เหลือแค่ราว 13 วัน ต้องสั่งด่วน ถ้า AI คิด 36 หน่วยตรง ๆ หรือไม่ทักเรื่องหน่วย ถือว่าพลาด','Ceftriaxone ใช้ ก.ย. 2,480 vial เกือบสองเท่าของสองเดือนก่อน ค่าเฉลี่ย 3 เดือนจะต่ำกว่าความจริง ต้องถามสาเหตุ (เช่น การระบาด) ก่อนสรุปปริมาณสั่ง','Metformin มี PO ค้างรับ 60,000 เม็ด ถ้านับรวม ไม่ต้องสั่ง ถ้าไม่นับ ใกล้จุดสั่ง'],
+ round2:'คำนวณใหม่โดยใช้ยอดใช้เดือนล่าสุดแทนค่าเฉลี่ยสำหรับรายการที่แนวโน้มเพิ่ม แล้วทำกราฟวันคงคลังของทุกรายการ เรียงจากน้อยไปมาก ไฮไลต์รายการที่ต่ำกว่าเกณฑ์',
+ skill:'Task 2 ใช้ทุกสัปดาห์ บันทึกเป็น Skill "คำนวณจุดสั่งซื้อ" แล้วแค่วางตารางใหม่',
+ approver:'หัวหน้างานคลังยา · หัวหน้าฝ่ายเภสัชกรรมสำหรับรายการมูลค่าสูง',
+ disc:'ถ้าระบบ HIS ส่งออกไฟล์นี้ได้อัตโนมัติทุกเช้า ขั้นไหนจะกลายเป็น Agent ได้ และขั้นไหนต้องเป็นคนเสมอ'
+},
+{
+ id:'c2', g:'inv', title:'ตรวจเอกสารเสนอราคา e-bidding ยา', who:'เภสัชกรจัดซื้อ / กรรมการพิจารณาผล',
+ why:'ต้องอ่านเอกสารคุณภาพยาจำนวนมาก ใช้เวลานานและตกหล่นได้',
+ chain:[['สร้างเช็กลิสต์จากประกาศ','dr'],['เทียบเอกสารรายบริษัท','ai'],['สรุปข้อบกพร่อง','ai'],['คณะกรรมการตัดสิน','hu']],
+ h:{model:'รุ่นคิดลึก เพราะต้องเทียบวันที่และเงื่อนไขหลายข้อ',tools:'Gemini Notebook หรือ Projects แนบประกาศและเอกสารของแต่ละบริษัทเป็น source',hitl:'กรรมการเปิดเอกสารจริงทุกข้อที่ AI ระบุว่าไม่ผ่าน'},
+ ctx:`ประกาศประกวดราคา (จำลอง): Ceftriaxone 1 g injection 30,000 vial
+วันยื่นเอกสาร 31 ต.ค. 2569 · ราคากลาง 32.00 บาท/vial
+เงื่อนไขเอกสาร
+1. ใบอนุญาตขายยาแผนปัจจุบันที่ยังไม่หมดอายุ
+2. ใบรับรอง GMP ของผู้ผลิต มีผลถึงวันยื่นเอกสาร
+3. COA ของ lot ที่จะส่งมอบ ออกไม่เกิน 12 เดือนก่อนวันยื่น
+4. ใบสำคัญการขึ้นทะเบียนตำรับยา
+5. ฉลากและเอกสารกำกับยาภาษาไทย
+6. หนังสือรับรองอายุยาคงเหลือเมื่อส่งมอบไม่น้อยกว่า 18 เดือน
+7. หนังสือแต่งตั้งตัวแทนจำหน่าย (กรณีไม่ใช่ผู้ผลิตหรือผู้นำเข้า)
+8. ราคาเสนอไม่เกินราคากลาง
+
+เอกสารที่ยื่น (สรุปจากแฟ้ม)
+บริษัท ฟาร์มาเอ จำกัด (ผู้นำเข้า): ใบอนุญาตขายยา หมดอายุ 31 ธ.ค. 2569 · GMP ถึง 15 ม.ค. 2570 · COA ลงวันที่ 12 มิ.ย. 2569 · ทะเบียนตำรับ มี · ฉลากไทย มี · หนังสืออายุยา 24 เดือน · ราคา 29.50
+บริษัท เมดบี จำกัด (ผู้นำเข้า): ใบอนุญาตขายยา หมดอายุ 31 ธ.ค. 2569 · GMP ถึง 30 ก.ย. 2569 · COA ลงวันที่ 3 ส.ค. 2569 · ทะเบียนตำรับ มี · ฉลากไทย มี · หนังสืออายุยา 18 เดือน · ราคา 27.00
+บริษัท ซีฟาร์ม จำกัด (ตัวแทนจำหน่าย): ใบอนุญาตขายยา หมดอายุ 31 ธ.ค. 2570 · GMP ถึง 1 มี.ค. 2571 · COA ลงวันที่ 20 ก.พ. 2568 · ทะเบียนตำรับ มี · ฉลากไทย มี · หนังสืออายุยา 20 เดือน · หนังสือแต่งตั้งตัวแทน มี · ราคา 33.00`,
+ tasks:[
+  {n:'Task 1',tag:'dr',r:'เลขานุการคณะกรรมการพิจารณาผลการประกวดราคายา',t:'แปลงเงื่อนไขในประกาศให้เป็นเช็กลิสต์ที่ตรวจได้ทีละข้อ ระบุเกณฑ์ผ่านเป็นวันที่หรือตัวเลขที่ชัดเจน',f:'ตาราง: ข้อ · สิ่งที่ต้องมี · เกณฑ์ผ่าน (วันที่/ตัวเลข) · ตรวจจากเอกสารไหน',x:'ใช้เฉพาะเงื่อนไขในประกาศ ห้ามเพิ่มเกณฑ์เอง'},
+  {n:'Task 2',tag:'ai',r:'เภสัชกรผู้ตรวจเอกสารคุณภาพยา',t:'ตรวจเอกสารของทั้ง 3 บริษัทตามเช็กลิสต์จาก Task 1 ทีละข้อ',f:'ตารางเทียบ: เงื่อนไข × บริษัท ใส่ ผ่าน / ไม่ผ่าน / ต้องตรวจเพิ่ม พร้อมเหตุผลสั้น ๆ ในช่องที่ไม่ผ่าน ตามด้วยสรุปว่าบริษัทใดผ่านครบทุกข้อ',x:'คำนวณช่วงวันที่ให้ชัด ถ้าข้อมูลไม่พอให้ใส่ "ต้องตรวจเพิ่ม" ห้ามสรุปแทนกรรมการว่าใครชนะ'},
+  {n:'Task 3',tag:'dr',r:'เลขานุการคณะกรรมการ',t:'ร่างบันทึกผลการตรวจเอกสารเสนอคณะกรรมการ',f:'บันทึก 1 หน้า: วัตถุประสงค์ · วิธีตรวจ · ตารางผลรายบริษัท · ประเด็นที่ต้องให้คณะกรรมการพิจารณา',x:'เขียนเป็นข้อเท็จจริงจากเอกสาร ไม่ใช้คำตัดสิน'}
+ ],
+ verify:['เมดบี ราคาต่ำสุด 27.00 แต่ GMP หมดอายุ 30 ก.ย. 2569 ก่อนวันยื่น ไม่ผ่านข้อ 2 ถ้า AI เสนอเมดบีเพราะถูกที่สุด ถือว่าพลาด','ซีฟาร์ม COA ลงวันที่ 20 ก.พ. 2568 เกิน 12 เดือนก่อนวันยื่น และราคา 33.00 เกินราคากลาง ไม่ผ่านสองข้อ','ฟาร์มาเอ ผ่านทุกข้อ แต่การตัดสินเป็นของคณะกรรมการ ไม่ใช่ AI'],
+ round2:'เพิ่มคอลัมน์ "หน้าเอกสารที่ใช้อ้างอิง" ให้ทุกช่อง เพื่อให้กรรมการเปิดตรวจได้เร็ว และทำรายการคำถามที่ต้องขอเอกสารเพิ่มจากแต่ละบริษัท',
+ skill:'Task 2 เป็น Skill "ตรวจเอกสาร e-bidding ตามเช็กลิสต์" ใช้ซ้ำได้ทุกรายการยา แค่เปลี่ยนประกาศ',
+ approver:'คณะกรรมการพิจารณาผลการประกวดราคา',
+ disc:'ถ้าใช้ Gemini Notebook แนบไฟล์ PDF จริงทุกฉบับ ความเสี่ยงจะลดลงตรงไหน และยังเหลือความเสี่ยงอะไร'
+},
+{
+ id:'c3', g:'inv', title:'ยาใกล้หมดอายุและยาเคลื่อนไหวช้า', who:'เภสัชกรคลังยา',
+ why:'ยาหมดอายุคาคลังทุกไตรมาส รู้ตัวช้า โอนย้ายไม่ทัน',
+ chain:[['คำนวณยาที่จะเหลือเกิน','ai'],['จัดลำดับมูลค่าความเสี่ยง','ai'],['เสนอการจัดการรายรายการ','dr'],['ร่างหนังสือแจ้งหน่วยงาน','dr']],
+ h:{model:'รุ่นเร็วก็พอ ถ้าให้รันโค้ด · รุ่นคิดลึกถ้าวางเป็นข้อความ',tools:'วางตาราง CSV · Code execution · Canvas สำหรับทำ Dashboard',hitl:'สุ่มคำนวณ 1 รายการ · ตรวจรายการที่หมดอายุแล้วกับของจริงในคลัง'},
+ ctx:`ยาคงคลัง วันอ้างอิง 30 ต.ค. 2569 (ข้อมูลจำลอง)
+ชื่อยา,คงเหลือ,ใช้เฉลี่ย_ต่อเดือน,วันหมดอายุ,ราคา_ต่อหน่วย_บาท
+Clopidogrel 75 mg tab,6000,1500,31 ม.ค. 2570,1.20
+Levetiracetam 500 mg tab,3000,400,30 เม.ย. 2570,6.50
+Esomeprazole 40 mg inj,240,30,31 ธ.ค. 2569,85.00
+Amiodarone 200 mg tab,1200,300,30 ก.ย. 2570,4.00
+Meropenem 1 g inj,150,40,31 มี.ค. 2570,210.00
+Albumin 20% 50 ml,40,6,28 ก.พ. 2570,1150.00
+Oseltamivir 75 mg cap,2000,50,30 พ.ย. 2569,18.00
+Warfarin 3 mg tab,800,350,15 ต.ค. 2569,0.80
+Spironolactone 25 mg tab,5000,600,31 ส.ค. 2571,0.90`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เภสัชกรบริหารคลังเวชภัณฑ์',t:'หายาที่จะใช้ไม่ทันก่อนหมดอายุ โดยนับจำนวนเดือนเต็มที่เหลือจากวันอ้างอิงถึงวันหมดอายุ',f:'ตาราง: ยา · เดือนที่เหลือ · ใช้ได้อีก (หน่วย) · ส่วนเกิน (หน่วย) · มูลค่าส่วนเกิน (บาท) เรียงตามมูลค่ามากไปน้อย แสดงสูตรใต้ตาราง',x:'ส่วนเกิน = คงเหลือ − (ใช้เฉลี่ย × เดือนที่เหลือ) ถ้าติดลบให้เป็น 0 ถ้าหมดอายุแล้วให้แยกแจ้งก่อนตาราง'},
+  {n:'Task 2',tag:'dr',r:'หัวหน้างานคลังยาที่ต้องตัดสินใจภายในสัปดาห์นี้',t:'เสนอวิธีจัดการรายการที่มีส่วนเกิน เช่น โอนให้หน่วยที่ใช้มาก แลกเปลี่ยนกับโรงพยาบาลเครือข่าย หยุดสั่งซื้อ ขอคืนบริษัท',f:'ตาราง: ยา · ทางเลือกแรก · ทางเลือกสำรอง · ต้องทำภายในวันที่',x:'ระบุชัดว่าทางเลือกใดต้องขออนุมัติ'},
+  {n:'Task 3',tag:'dr',r:'เภสัชกรคลังยา',t:'ร่างข้อความสั้นแจ้งหอผู้ป่วยหรือหน่วยที่ใช้ยาเหล่านี้มาก ขอให้ช่วยใช้ยาล็อตใกล้หมดอายุก่อน',f:'ข้อความ LINE ไม่เกิน 6 บรรทัด สุภาพ มีรายการยาและวันหมดอายุ',x:'ไม่ใส่มูลค่าเงินในข้อความถึงหน่วยงาน'}
+ ],
+ verify:['Warfarin 3 mg หมดอายุแล้ว 15 ต.ค. 2569 ต้องแยกออกและกักกันทันที ถ้า AI นับรวมเป็นยาใกล้หมดอายุ ถือว่าพลาด','Oseltamivir เหลือ 1 เดือน ใช้ได้ 50 ส่วนเกิน 1,950 แคปซูล มูลค่า 35,100 บาท สูงสุดในรายการ','นับเดือนเต็ม: Albumin เหลือ 3 เดือน ส่วนเกิน 22 ขวด มูลค่า 25,300 บาท · Esomeprazole 2 เดือน ส่วนเกิน 180 vial 15,300 บาท · Levetiracetam 3,900 บาท · Clopidogrel 1,800 บาท ถ้า AI นับเดือนแบบปัดขึ้น ตัวเลขจะต่าง ให้กลุ่มคุยว่าจะใช้วิธีนับแบบไหน'],
+ round2:'ทำ Dashboard ด้วย Canvas แสดงมูลค่าความเสี่ยงสูญเสียรวม แยกตามเดือนที่จะหมดอายุ และรายการที่ต้องจัดการใน 30 วัน',
+ skill:'Task 1 ทำทุกเดือน บันทึกเป็น Skill "ตรวจยาใกล้หมดอายุ"',
+ approver:'หัวหน้างานคลังยา',
+ disc:'ถ้าระบบ HIS แจ้งยาใกล้หมดอายุอยู่แล้ว AI ควรเพิ่มคุณค่าตรงไหน'
+},
+{
+ id:'c4', g:'inv', title:'เบิกยาคลังย่อยจากยอดใช้จริง', who:'เภสัชกรห้องยาย่อย / หัวหน้าห้องยา',
+ why:'ใช้การจดมือว่ายาไหนหมด ลืมจดเมื่อไรยาขาด ผู้ป่วยได้ยาช้า',
+ chain:[['ตรวจข้อมูลยอดใช้ที่ส่งออกจากระบบ','ai'],['คำนวณปริมาณเบิกตาม par level','ai'],['สร้างใบเบิก','dr'],['หัวหน้าห้องยาตรวจและกดเบิก','hu']],
+ h:{model:'รุ่นเร็วพอ ถ้าใช้โค้ดคำนวณ',tools:'วางตาราง · Code execution · Canvas ทำแบบฟอร์มเบิก',hitl:'หัวหน้าห้องยาตรวจรายการที่ AI ทักว่าผิดปกติก่อนกดเบิก'},
+ ctx:`ห้องยาย่อยอายุรกรรม · ยอดใช้ 7 วัน (22–28 ต.ค. 2569) ส่งออกจากระบบ (ข้อมูลจำลอง)
+ชื่อยา,par_level,คงเหลือ,ใช้_7_วัน,บรรจุต่อแพ็ก
+Paracetamol 500 mg tab,2000,650,1480,100
+Omeprazole 20 mg cap,800,410,520,100
+Furosemide 40 mg tab,600,220,410,100
+Ceftriaxone 1 g inj,120,35,96,10
+Enoxaparin 40 mg inj,80,26,62,10
+Potassium chloride 20 mEq inj,60,8,48,10
+Losartan 50 mg tab,500,530,140,100
+Amlodipine 5 mg tab,700,180,520,100
+Amlodipine 5 mg tab,700,180,520,100
+หมายเหตุ: ปริมาณเบิก = par level − คงเหลือ ปัดขึ้นเป็นจำนวนแพ็ก`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เภสัชกรห้องยาย่อยที่ดูแลการเบิกยา',t:'ตรวจตารางยอดใช้ที่ส่งออกจากระบบ หาแถวซ้ำ ค่าที่ขัดกัน และรายการที่คงเหลือเกิน par level',f:'รายการปัญหาเป็นข้อ ๆ พร้อมวิธีแก้ ตามด้วยตารางที่แก้แล้ว',x:'ห้ามลบแถวโดยไม่แจ้ง'},
+  {n:'Task 2',tag:'ai',r:'เภสัชกรห้องยาย่อย',t:'คำนวณปริมาณเบิกของแต่ละรายการจากตารางที่แก้แล้ว และประเมินว่า par level ปัจจุบันพอสำหรับยอดใช้ 7 วันหรือไม่',f:'ตาราง: ยา · ต้องเบิก (หน่วย) · ต้องเบิก (แพ็ก) · par level พอไหม · ข้อเสนอ par level ใหม่',x:'รายการที่ไม่ต้องเบิกให้ใส่ 0 และบอกเหตุผล'},
+  {n:'Task 3',tag:'dr',r:'นักพัฒนาเครื่องมือห้องยา',t:'ใช้ Canvas สร้างแบบฟอร์มใบเบิกที่กรอกคงเหลือแล้วคำนวณปริมาณเบิกเป็นแพ็กให้อัตโนมัติ',f:'หน้าเว็บใช้บนมือถือได้ ภาษาไทย มีปุ่มคัดลอกรายการเบิกเป็นข้อความ',x:'ไม่เก็บข้อมูลผู้ป่วย'}
+ ],
+ verify:['Amlodipine ซ้ำ 2 แถว ถ้า AI รวมยอดใช้เป็น 1,040 หรือเบิกซ้ำ ถือว่าพลาด','Losartan คงเหลือ 530 เกิน par 500 ไม่ต้องเบิก','Potassium chloride ใช้ 48 ใน 7 วัน par 60 แทบไม่พอ ควรเสนอทบทวน par level และเป็นยา high-alert ต้องตรวจซ้ำ'],
+ round2:'เพิ่มคอลัมน์ "วันที่ยาจะหมดถ้าไม่เบิก" จากยอดใช้ต่อวัน และไฮไลต์รายการที่จะหมดภายใน 2 วัน',
+ skill:'Task 2 เป็น Skill "คำนวณใบเบิกคลังย่อย" ใช้ทุกวัน',
+ approver:'หัวหน้าห้องยาย่อย',
+ disc:'ถ้าระบบส่งไฟล์นี้ทุกเช้าอัตโนมัติ Agent ควรหยุดรอคนตรงไหน'
+},
+{
+ id:'c5', g:'qual', title:'รายงาน KPI ฝ่ายเภสัชกรรมประจำเดือน', who:'หัวหน้าฝ่าย / ผู้ดูแลข้อมูลคุณภาพ',
+ why:'อยากได้ Dashboard และสรุปผู้บริหารที่อัปเดตเอง แทนการทำมือทุกเดือน',
+ chain:[['ตรวจข้อมูลผิดปกติ','ai'],['เทียบเป้าและแนวโน้ม','ai'],['ร่าง Executive Summary','dr'],['ทำ Dashboard','dr'],['หัวหน้าฝ่ายรับรอง','hu']],
+ h:{model:'รุ่นคิดลึก สำหรับตีความแนวโน้ม',tools:'วางตาราง · Canvas ทำ Dashboard · Gemini Notebook ถ้าแนบคู่มือนิยามตัวชี้วัด',hitl:'ผู้ดูแลข้อมูลยืนยันค่าผิดปกติกับต้นทาง · หัวหน้าฝ่ายรับรองก่อนส่งผู้บริหาร'},
+ ctx:`ตัวชี้วัดฝ่ายเภสัชกรรม ไตรมาส ก.ค.–ก.ย. 2569 (ข้อมูลจำลอง)
+ตัวชี้วัด,เป้าหมาย,ก.ค.,ส.ค.,ก.ย.
+เวลารอรับยา OPD เฉลี่ย (นาที),≤30,28,31,34
+ความคลาดเคลื่อนการจ่ายยา (ครั้ง/10,000 ใบสั่ง),≤5,4.2,3.9,4.5
+ร้อยละใบสั่งยา IPD ที่คัดกรองก่อนจ่าย,≥95,96.5,97.1,0.98
+ยาขาดคราว (รายการ/เดือน),≤3,2,4,6
+มูลค่ายาคงคลัง (วัน),≤60,58,61,63
+ร้อยละ ADR ประเมินภายใน 24 ชม.,≥90,92,88,91
+ให้คำปรึกษาผู้ป่วย warfarin (ราย),≥120,131,125,
+ร้อยละ medication reconciliation ภายใน 24 ชม.,≥80,72,76,81`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'ผู้ดูแลข้อมูลคุณภาพของฝ่ายเภสัชกรรม',t:'ตรวจตารางตัวชี้วัดก่อนวิเคราะห์ หาค่าที่หน่วยหรือรูปแบบผิด ช่องว่าง และค่าที่ดูไม่สมเหตุสมผล',f:'รายการปัญหา: ตัวชี้วัด · เดือน · ปัญหา · ต้องยืนยันกับใคร',x:'ห้ามเติมหรือแก้ตัวเลขเอง'},
+  {n:'Task 2',tag:'ai',r:'นักวิเคราะห์คุณภาพบริการเภสัชกรรม',t:'เทียบแต่ละตัวชี้วัดกับเป้าหมายและแนวโน้ม 3 เดือน โดยไม่นำค่าที่ยังไม่ยืนยันจาก Task 1 มาสรุป',f:'ตาราง: ตัวชี้วัด · สถานะ ก.ย. (ผ่าน/ไม่ผ่าน/รอยืนยัน) · แนวโน้ม (ดีขึ้น/แย่ลง/คงที่) · ข้อสังเกต 1 บรรทัด',x:'ระวังทิศของเป้า ตัวชี้วัดบางตัวยิ่งน้อยยิ่งดี'},
+  {n:'Task 3',tag:'dr',r:'หัวหน้าฝ่ายเภสัชกรรมที่ต้องรายงานผู้อำนวยการ',t:'ร่าง Executive Summary จากผล Task 2',f:'ไม่เกิน 10 บรรทัด: ภาพรวม 1 ประโยค · 3 เรื่องที่ต้องตัดสินใจ · สิ่งที่ฝ่ายจะทำเดือนหน้า',x:'ทุกตัวเลขต้องมาจากตาราง ห้ามคาดเดาสาเหตุโดยไม่ระบุว่าเป็นสมมติฐาน'}
+ ],
+ verify:['ร้อยละคัดกรอง IPD เดือน ก.ย. ใส่ 0.98 ซึ่งน่าจะเป็น 98% ถ้า AI สรุปว่าตกเป้าเหลือ 0.98% ถือว่าพลาด','ให้คำปรึกษา warfarin เดือน ก.ย. ว่าง ห้ามเดาค่า','ยาขาดคราวและวันคงคลังแย่ลงสามเดือนติด และทั้งสองตัวยิ่งน้อยยิ่งดี'],
+ round2:'ใช้ Canvas ทำ Dashboard หน้าเดียว: การ์ดสถานะตัวชี้วัดสีเขียว/แดง กราฟแนวโน้ม 3 เดือน และกล่อง "รอยืนยันข้อมูล"',
+ skill:'Task 1–2 รวมเป็น Skill "ตรวจและสรุป KPI รายเดือน"',
+ approver:'หัวหน้าฝ่ายเภสัชกรรม',
+ disc:'ถ้าจะให้เป็น Agent ทำทุกต้นเดือน ต้องตกลงอะไรกับฝ่ายสารสนเทศก่อน'
+},
+{
+ id:'c6', g:'qual', title:'จัดระดับและวิเคราะห์รายงานความคลาดเคลื่อนทางยา', who:'เภสัชกรความปลอดภัยด้านยา / คณะกรรมการความเสี่ยง',
+ why:'รายงานใน Excel เยอะจนกลัววิเคราะห์ผิด อยากเห็นแนวโน้มและมาตรการที่แก้ระบบ',
+ chain:[['จัดระดับ NCC MERP','ai'],['จัดกลุ่มประเภทและหาแนวโน้ม','ai'],['เสนอมาตรการตามความแรง','dr'],['คณะกรรมการทบทวน','hu']],
+ h:{model:'รุ่นคิดลึก เพราะต้องใช้ดุลยพินิจ',tools:'วางข้อความรายงาน (ตัดข้อมูลระบุตัวแล้ว) · Canvas ทำ Fishbone',hitl:'เภสัชกรจัดระดับเองก่อนดูคำตอบ แล้วเทียบ · คณะกรรมการตัดสินระดับสุดท้าย'},
+ ctx:`รายงานความคลาดเคลื่อนทางยา ต.ค. 2569 (ข้อมูลจำลอง ไม่มีข้อมูลระบุตัวผู้ป่วย)
+1. จ่าย Amlodipine 10 mg แทน 5 mg เภสัชกรตรวจพบก่อนส่งมอบ
+2. ฉลากระบุวันละ 2 ครั้ง แพทย์สั่งวันละครั้ง ผู้ป่วยรับยากลับบ้านแล้ว โทรแจ้งได้ก่อนรับประทาน
+3. ให้ Ceftriaxone ซ้ำ 2 ครั้งห่างกัน 2 ชั่วโมง ต้องเฝ้าระวังอาการ ไม่เกิดอันตราย
+4. Hydralazine และ Hydroxyzine วางชั้นติดกัน เจ้าหน้าที่สังเกตเห็นความเสี่ยงก่อนเกิดเหตุ
+5. ให้ Insulin regular 10 unit แทน 4 unit ผู้ป่วยน้ำตาลต่ำ ต้องให้ glucose ทางหลอดเลือด
+6. ผสม Potassium chloride ผิดความเข้มข้น ตรวจพบก่อนให้ผู้ป่วย
+7. ผู้ป่วยมีประวัติแพ้ Amoxicillin ได้รับ Ampicillin เกิดผื่น ต้องนอนโรงพยาบาลต่อ 2 วัน
+8. ลืมให้ Enoxaparin 1 มื้อ ไม่เกิดผลต่อผู้ป่วย
+9. Methotrexate จ่ายวิธีใช้แบบรายวันแทนรายสัปดาห์ ตรวจพบก่อนส่งมอบ
+10. ให้ Vancomycin เร็วเกินไป เกิดผื่นแดงตามตัว ต้องหยุดยาและให้ยาแก้แพ้`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เภสัชกรผู้เชี่ยวชาญระบบรายงานความคลาดเคลื่อนทางยา',t:'จัดระดับความรุนแรงตาม NCC MERP (A–I) ของแต่ละเหตุการณ์',f:'ตาราง: ลำดับ · ระดับ · เหตุผล 1 บรรทัด · ความมั่นใจ (สูง/กลาง/ต่ำ) · ข้อมูลที่ต้องถามเพิ่ม',x:'ถ้าข้อมูลไม่พอให้ระบุความมั่นใจต่ำ ห้ามเดา'},
+  {n:'Task 2',tag:'ai',r:'นักวิเคราะห์ความเสี่ยงของคณะกรรมการ',t:'จัดกลุ่มเหตุการณ์ตามขั้นตอนในกระบวนการใช้ยา และชี้กลุ่มที่เกี่ยวกับยาที่มีความเสี่ยงสูง',f:'ตาราง: ขั้นตอน (สั่ง/คัดลอก/จ่าย/บริหาร) · จำนวน · เกี่ยวกับยา high-alert กี่เหตุการณ์ · ข้อสังเกต',x:'ใช้เฉพาะข้อมูลในรายงาน'},
+  {n:'Task 3',tag:'dr',r:'ที่ปรึกษาความปลอดภัยด้านยา',t:'เสนอมาตรการป้องกันสำหรับ 3 กลุ่มปัญหาหลัก',f:'ตาราง: ปัญหา · มาตรการ 3 ข้อเรียงจากแรงไปเบา (บังคับด้วยระบบ > อัตโนมัติ > มาตรฐานงาน > อบรม) · ตัวชี้วัดติดตาม 1 ตัว',x:'เน้นแก้ระบบ ไม่กล่าวโทษบุคคล'}
+ ],
+ verify:['เฉลยที่ควรได้: 1 B · 2 C (ถึงผู้ป่วยแล้วแต่ไม่เกิดอันตราย กลุ่มควรคุยกัน) · 3 D · 4 A · 5 E · 6 B · 7 F · 8 C · 9 B · 10 E','ข้อ 5, 6, 9 เป็นยา high-alert ต้องถูกชี้','ถ้ามาตรการข้อแรกเป็นแค่ "อบรมเพิ่ม" ให้สั่งใหม่'],
+ round2:'วาด Fishbone Diagram ของเหตุการณ์ข้อ 5 ด้วย Canvas แยกสาเหตุ คน วิธีการ ระบบ สิ่งแวดล้อม และทำรายการคำถามที่ต้องสอบถามเพิ่ม',
+ skill:'Task 1 เป็น Skill "จัดระดับ NCC MERP" ใช้กับรายงานทุกฉบับ',
+ approver:'คณะกรรมการความเสี่ยงด้านยา',
+ disc:'ระดับที่ AI ให้ต่างจากของกลุ่มข้อไหน เพราะอะไร และควรเขียน prompt ให้ AI ถามกลับเมื่อข้อมูลไม่พอไหม'
+},
+{
+ id:'c7', g:'qual', title:'อัตรากำลังกับเวลารอรับยา OPD', who:'หัวหน้างานบริการผู้ป่วยนอก',
+ why:'ผู้ป่วยรอนานบางช่วง อยากรู้ว่าขาดคนหรือขาดระบบ',
+ chain:[['ตรวจข้อมูลผิดปกติ','ai'],['หาช่วงพีคและความสัมพันธ์','ai'],['เสนอการจัดเวร','dr'],['ร่างข้อเสนอผู้บริหาร','dr']],
+ h:{model:'รุ่นคิดลึก + ให้รันโค้ด',tools:'วางตาราง · Code execution · Canvas ทำกราฟ',hitl:'หัวหน้างานตรวจค่าผิดปกติกับบันทึกจริง · เลือกข้อเสนอที่ทำได้'},
+ ctx:`ห้องจ่ายยาผู้ป่วยนอก รายชั่วโมง 3 วัน (ข้อมูลจำลอง)
+วัน,ช่วงเวลา,เภสัชกร,เจ้าพนักงาน,ใบสั่งยาเข้า,เวลารอเฉลี่ย_นาที
+อังคาร,08-09,3,4,60,14
+อังคาร,09-10,4,5,135,26
+อังคาร,10-11,4,5,170,38
+อังคาร,11-12,4,5,150,41
+อังคาร,12-13,2,3,95,47
+อังคาร,13-14,,4,88,29
+อังคาร,14-15,3,4,70,18
+อังคาร,15-16,3,3,40,12
+พุธ,08-09,3,4,65,15
+พุธ,09-10,4,5,142,27
+พุธ,10-11,4,5,181,40
+พุธ,11-12,4,5,160,370
+พุธ,12-13,2,3,99,49
+พุธ,13-14,3,4,85,27
+พุธ,14-15,3,4,72,19
+พุธ,15-16,3,3,38,11
+พฤหัส,08-09,3,4,58,13
+พฤหัส,09-10,4,5,128,24
+พฤหัส,10-11,4,5,165,36
+พฤหัส,11-12,4,5,148,39
+พฤหัส,12-13,3,4,92,28
+พฤหัส,13-14,3,4,80,25
+พฤหัส,14-15,3,4,66,17
+พฤหัส,15-16,3,3,35,10`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'นักวิเคราะห์ข้อมูลงานบริการเภสัชกรรมผู้ป่วยนอก',t:'ตรวจข้อมูลก่อนวิเคราะห์ หาค่าผิดปกติและช่องว่าง',f:'รายการ: วัน · ช่วงเวลา · ปัญหา · วิธีจัดการก่อนคำนวณ',x:'ห้ามแก้ค่าเอง ให้แยกออกและบอกว่าแยกตัวไหน'},
+  {n:'Task 2',tag:'ai',r:'นักวิเคราะห์ข้อมูลงานบริการ',t:'หาช่วงที่รอเกิน 30 นาที และดูว่าสัมพันธ์กับจำนวนเภสัชกรหรือจำนวนใบสั่งยาต่อเภสัชกรอย่างไร',f:'ตารางเวลารอเฉลี่ยรายช่วง · ใบสั่งยาต่อเภสัชกรต่อชั่วโมง · ข้อสังเกตสำคัญ 3 ข้อพร้อมตัวเลขอ้างอิง',x:'รันโค้ดคำนวณจริง แสดงสูตร'},
+  {n:'Task 3',tag:'dr',r:'ที่ปรึกษาการจัดอัตรากำลัง',t:'เสนอการจัดเวร 2 ทางเลือกที่ไม่เพิ่มจำนวนคนรวมต่อวัน',f:'ตาราง: ทางเลือก · เปลี่ยนอะไร · ผลที่คาด · ความเสี่ยง · ตามด้วยข้อเสนอที่แนะนำ 1 ข้อ',x:'ระบุชัดว่าผลที่คาดเป็นสมมติฐาน'}
+ ],
+ verify:['พุธ 11–12 เวลารอ 370 นาทีผิดปกติ (ช่วงเดียวกันวันอื่น 39–41) ต้องแยกออก','อังคาร 13–14 ช่องเภสัชกรว่าง ห้ามเดา','ช่วง 12–13 วันอังคารและพุธ เภสัชกรเหลือ 2 คน เวลารอ 47–49 นาที ส่วนพฤหัสมี 3 คน รอ 28 นาที นี่คือหลักฐานสำคัญ'],
+ round2:'ทำกราฟสองแกนด้วย Canvas: แท่งใบสั่งยาต่อเภสัชกร เส้นเวลารอ แยกรายวัน และใส่เส้นเป้า 30 นาที',
+ skill:'Task 1–2 เป็น Skill "วิเคราะห์อัตรากำลังรายชั่วโมง"',
+ approver:'หัวหน้างานบริการผู้ป่วยนอก · หัวหน้าฝ่าย',
+ disc:'ถ้าข้อมูลมีเวลาเริ่มพักของแต่ละคน การวิเคราะห์จะดีขึ้นอย่างไร'
+},
+{
+ id:'c8', g:'clin', title:'ตอบคำถามด้านยาจากแหล่งที่ตรวจแล้ว', who:'เภสัชกรสารสนเทศยา (DI)',
+ why:'ค้นจากเว็บทั่วไปต้องกลั่นกรองความน่าเชื่อถือ ใช้เวลามาก อยากได้คลังความรู้ที่ตอบจากแหล่งที่ verify แล้ว',
+ chain:[['จัดประเภทคำถาม','ai'],['ตอบจาก source ที่กำหนดเท่านั้น','ai'],['ร่างคำตอบพร้อมอ้างอิง','dr'],['เภสัชกรตรวจก่อนตอบกลับ','hu']],
+ h:{model:'รุ่นคิดลึก',tools:'Gemini Notebook แนบเอกสารของโรงพยาบาลเป็น source (หรือ Projects ของ ChatGPT/Claude)',hitl:'เภสัชกร DI ตรวจคำตอบกับเอกสารต้นทางทุกครั้ง'},
+ ctx:`SOURCE: รายการยาห้ามบดหรือห้ามหักเม็ด (ฉบับฝึก รพ.ตัวอย่าง — ใช้ฝึกเท่านั้น ต้องตรวจกับแหล่งอ้างอิงจริง)
+- Nifedipine ชนิดออกฤทธิ์นาน (ER/GITS): ห้ามบด ยาจะออกฤทธิ์ทันทีทั้งหมด → ปรึกษาแพทย์เปลี่ยนรูปแบบยา
+- Isosorbide mononitrate SR: ห้ามบด → ปรึกษาแพทย์
+- Metformin XR: ห้ามบด → พิจารณาชนิดออกฤทธิ์ทันที
+- Aspirin เคลือบ enteric 81 mg: ห้ามบด → ใช้ชนิดไม่เคลือบ
+- Potassium chloride SR: ห้ามบด → ใช้ชนิดน้ำ
+- Omeprazole แคปซูล: ห้ามบดเม็ดยาย่อยข้างใน เปิดแคปซูลผสมน้ำผลไม้ที่เป็นกรดได้ · การให้ทางสายให้อาหาร ให้ปรึกษาเภสัชกร
+- Tamsulosin แคปซูล: ห้ามเปิดหรือบด
+- Doxazosin XL: ห้ามบด
+
+คำถามจากหอผู้ป่วย
+Q1: ผู้ป่วยกลืนลำบาก ให้ Nifedipine GITS ทางสายให้อาหารได้ไหม
+Q2: Omeprazole แคปซูล ให้ทางสาย NG ได้ไหม
+Q3: Warfarin บดให้ทางสายได้ไหม`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เภสัชกรสารสนเทศยาที่คัดแยกคำถาม',t:'จัดประเภทคำถามแต่ละข้อ และบอกว่า source ที่ให้ตอบได้หรือไม่',f:'ตาราง: คำถาม · ประเภท (การบริหารยา/ความคงตัว/อื่น) · source ตอบได้ไหม · ความเร่งด่วน',x:'ใช้เฉพาะ source ด้านบน'},
+  {n:'Task 2',tag:'ai',r:'เภสัชกรสารสนเทศยาที่ตอบจากเอกสารของโรงพยาบาลเท่านั้น',t:'ตอบคำถามทั้ง 3 ข้อจาก source โดยอ้างบรรทัดที่ใช้',f:'แต่ละข้อ: คำตอบสั้น 2–3 บรรทัด · อ้างอิงบรรทัดจาก source · สิ่งที่ต้องแจ้งพยาบาล',x:'ถ้า source ไม่ครอบคลุม ให้ตอบว่า "ไม่มีใน source ต้องค้นเพิ่ม" ห้ามตอบจากความรู้ทั่วไป'},
+  {n:'Task 3',tag:'dr',r:'เภสัชกร DI ที่สื่อสารกับพยาบาล',t:'ร่างข้อความตอบกลับหอผู้ป่วยจาก Task 2',f:'ข้อความ LINE ไม่เกิน 8 บรรทัด ภาษาเข้าใจง่าย ระบุว่าเภสัชกรผู้ตอบจะตรวจซ้ำ',x:'ข้อที่ไม่มีใน source ให้แจ้งว่ากำลังค้นและจะตอบภายในเวลาที่กำหนด'}
+ ],
+ verify:['Q3 Warfarin ไม่มีใน source ถ้า AI ตอบจากความรู้ทั่วไป ถือว่าพลาดตามกติกาของ task','Q2 source บอกให้ปรึกษาเภสัชกรสำหรับการให้ทางสาย AI ไม่ควรแต่งวิธีเตรียมเอง','ลองถามแบบเดียวกันในแชตธรรมดาที่ไม่มี source แล้วเทียบคำตอบ'],
+ round2:'สร้าง Gemini Notebook ที่ใส่เอกสาร 3 ชุด (ยาห้ามบด · ความคงตัวยาฉีด · ยา high-alert) แล้วถามคำถามข้ามเอกสาร ดูว่าอ้างอิงถูกฉบับไหม',
+ skill:'Task 2 เป็น Skill "ตอบจาก source เท่านั้น" ผูกกับ Notebook ของหน่วย DI',
+ approver:'เภสัชกรสารสนเทศยาผู้รับผิดชอบเวร',
+ disc:'คลังความรู้ของหน่วยควรแยก Notebook ตามหมวดโรคหรือตามประเภทคำถาม'
+},
+{
+ id:'c9', g:'clin', title:'ทบทวนการใช้ยา (DUE) เสนอ PTC', who:'เภสัชกรคลินิก / เลขานุการ PTC',
+ why:'ทำ DUE ทีละแฟ้มใช้เวลานาน สรุปผลเสนอคณะกรรมการไม่ทัน',
+ chain:[['สรุปเกณฑ์จากแนวทาง','dr'],['ประเมินรายเคสตามเกณฑ์','ai'],['คำนวณผลรวม','ai'],['ร่างรายงาน PTC','dr'],['PTC พิจารณา','hu']],
+ h:{model:'รุ่นคิดลึก',tools:'Gemini Notebook แนบเกณฑ์ DUE เป็น source · วางตารางเคส',hitl:'เภสัชกรคลินิกสุ่มทบทวนเคส · PTC ตัดสินมาตรการ'},
+ ctx:`เกณฑ์ DUE การใช้ PPI ชนิดฉีด (เกณฑ์ฝึกของ รพ.ตัวอย่าง)
+ข้อบ่งใช้ที่เหมาะสม: (1) เลือดออกทางเดินอาหารส่วนบน (2) ผู้ป่วยงดน้ำงดอาหารและมีข้อบ่งใช้ PPI (3) ป้องกันแผลจากภาวะเครียดในผู้ป่วยวิกฤตที่มีปัจจัยเสี่ยง
+การเปลี่ยนเป็นยารับประทาน: ควรเปลี่ยนภายใน 72 ชม. หลังรับประทานได้
+
+เคส (ไม่ระบุตัวตน)
+เคส,ข้อบ่งใช้ที่บันทึก,งดน้ำงดอาหาร,วันที่ให้ทางหลอดเลือด,รับประทานได้ตั้งแต่วันที่,เปลี่ยนเป็นยากิน
+1,เลือดออกทางเดินอาหารส่วนบน,ใช่,4,3,ใช่
+2,ป้องกันแผลกระเพาะทั่วไป,ไม่,5,1,ไม่
+3,ผู้ป่วย ICU ใช้เครื่องช่วยหายใจ,ใช่,6,5,ใช่
+4,ปวดท้อง,ไม่,3,1,ไม่
+5,เลือดออกทางเดินอาหารส่วนบน,ใช่,3,2,ใช่
+6,ผ่าตัดช่องท้อง งดน้ำงดอาหาร มีประวัติแผลกระเพาะ,ใช่,4,3,ใช่
+7,,ไม่,5,1,ไม่
+8,ป้องกันแผลกระเพาะทั่วไป,ไม่,2,1,ใช่
+9,ผู้ป่วย ICU ภาวะช็อก,ใช่,7,6,ใช่
+10,คลื่นไส้อาเจียน,ไม่,4,2,ไม่
+11,เลือดออกทางเดินอาหารส่วนบน,ใช่,5,4,ใช่
+12,ป้องกันแผลกระเพาะทั่วไป,ไม่,6,1,ไม่`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เภสัชกรคลินิกที่ทำ DUE',t:'ประเมินแต่ละเคสว่าข้อบ่งใช้เหมาะสมตามเกณฑ์หรือไม่ และเปลี่ยนเป็นยากินภายใน 72 ชม. หรือไม่',f:'ตาราง: เคส · ข้อบ่งใช้เหมาะสม (ใช่/ไม่/ข้อมูลไม่พอ) · เกณฑ์ข้อที่ใช้ · เปลี่ยนทัน (ใช่/ไม่) · หมายเหตุ',x:'ระยะหลังรับประทานได้ = วันที่ให้ทางหลอดเลือด − วันที่รับประทานได้ (เป็นวัน) ถ้าเกิน 3 วันถือว่าไม่ทัน'},
+  {n:'Task 2',tag:'ai',r:'นักวิเคราะห์ข้อมูล DUE',t:'คำนวณร้อยละข้อบ่งใช้เหมาะสม และร้อยละการเปลี่ยนเป็นยากินทัน โดยแยกเคสที่ข้อมูลไม่พอออกจากตัวหาร',f:'ตารางสรุป 2 แถว พร้อมตัวตั้งและตัวหาร',x:'แสดงวิธีคำนวณ'},
+  {n:'Task 3',tag:'dr',r:'เลขานุการคณะกรรมการเภสัชกรรมและการบำบัด',t:'ร่างรายงาน DUE 1 หน้าเสนอ PTC',f:'ความเป็นมา · ผลการประเมิน · ปัญหาหลัก 2 ข้อ · ข้อเสนอมาตรการ 3 ข้อ',x:'ข้อเสนอต้องอิงตัวเลขจาก Task 2'}
+ ],
+ verify:['เคส 7 ไม่มีข้อบ่งใช้บันทึก ต้องเป็น "ข้อมูลไม่พอ" ไม่ใช่ "ไม่เหมาะสม"','ข้อบ่งใช้เหมาะสม 6 จาก 11 เคสที่ประเมินได้ (1, 3, 5, 6, 9, 11) ราว 55%','เปลี่ยนเป็นยากินทัน 7 จาก 12 เคส (1, 3, 5, 6, 8, 9, 11) เคสที่ไม่เปลี่ยนเลยคือ 2, 4, 7, 10, 12 ซึ่งเป็นกลุ่มเดียวกับข้อบ่งใช้ไม่เหมาะสมหรือไม่มีข้อมูล นี่คือประเด็นเสนอ PTC'],
+ round2:'ถ้าจะทำ DUE แบบนี้ทุกไตรมาส ให้ออกแบบแบบเก็บข้อมูล (data collection form) ที่ทำให้ AI ประเมินได้แม่นขึ้น',
+ skill:'Task 1 เป็น Skill "ประเมิน DUE ตามเกณฑ์" เปลี่ยนแค่ไฟล์เกณฑ์',
+ approver:'คณะกรรมการเภสัชกรรมและการบำบัด (PTC)',
+ disc:'การให้ AI อ่านเวชระเบียนจริงต้องผ่านอะไรบ้างตาม PDPA และแนวทางของโรงพยาบาล'
+},
+{
+ id:'c10', g:'clin', title:'คำขออนุมัติยานอกบัญชีหรือยาราคาสูง', who:'เภสัชกรผู้ตรวจคำขอ / ศูนย์ประกันสุขภาพ',
+ why:'เอกสารส่งต่อหลายมือ แพทย์ → เภสัชกร → ศูนย์ประกัน → ผู้อำนวยการ ช้าและขาดเอกสารบ่อย',
+ chain:[['ตรวจความครบของแบบฟอร์ม','ai'],['เทียบเกณฑ์โรงพยาบาลและสิทธิ์','ai'],['สรุปประเด็นให้ผู้พิจารณา','dr'],['ผู้มีอำนาจอนุมัติ','hu']],
+ h:{model:'รุ่นคิดลึก',tools:'Projects/Notebook ที่ใส่เกณฑ์การอนุมัติเป็นคำสั่งประจำ',hitl:'เภสัชกรยืนยันการตรวจ · ผู้อำนวยการหรือผู้ได้รับมอบอำนาจอนุมัติ'},
+ ctx:`เกณฑ์การอนุมัติยานอกบัญชีราคาสูง (เกณฑ์ฝึกของ รพ.ตัวอย่าง)
+ต้องมีครบ: (ก) ข้อบ่งใช้ตรงตามที่ขึ้นทะเบียน (ข) หลักฐานว่าใช้ยาในบัญชีแล้วไม่ได้ผลหรือมีข้อห้ามใช้ (ค) ผลตรวจทางห้องปฏิบัติการที่กำหนดสำหรับยานั้น (ง) แพทย์ผู้เชี่ยวชาญลงนาม (จ) ระยะเวลาใช้ยาและจุดประเมินผล
+สิทธิ์: ถ้าสิทธิ์ไม่ครอบคลุม ต้องมีหนังสือยินยอมชำระเงินเอง
+
+คำขอ (ไม่ระบุตัวตน)
+คำขอ A: ยา Drug-X ข้อบ่งใช้ตรงทะเบียน · ใช้ยาในบัญชี 2 ชนิด ไม่ได้ผล มีบันทึก · ผลแล็บแนบครบ · แพทย์ผู้เชี่ยวชาญลงนาม · ใช้ 6 เดือน ประเมินที่ 3 เดือน · สิทธิ์ครอบคลุม
+คำขอ B: ยา Drug-Y ข้อบ่งใช้ตรงทะเบียน · ใช้ยาในบัญชีแล้วไม่ได้ผล มีบันทึก · ไม่แนบผลแล็บ · แพทย์ผู้เชี่ยวชาญลงนาม · ใช้ 3 เดือน ประเมินที่ 1 เดือน · สิทธิ์ครอบคลุม
+คำขอ C: ยา Drug-Z ข้อบ่งใช้ตรงทะเบียน · มีข้อห้ามใช้ยาในบัญชี มีบันทึก · ผลแล็บแนบครบ · แพทย์ผู้เชี่ยวชาญลงนาม · ไม่ระบุระยะเวลาใช้ · สิทธิ์ไม่ครอบคลุม ไม่มีหนังสือยินยอมชำระเงิน`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เภสัชกรผู้ตรวจคำขออนุมัติยา',t:'ตรวจคำขอแต่ละรายการตามเกณฑ์ (ก)–(จ) และเงื่อนไขสิทธิ์',f:'ตาราง: คำขอ × เกณฑ์ ใส่ ครบ / ขาด พร้อมสรุปว่าส่งต่อได้ หรือต้องส่งคืนแก้ไข',x:'ห้ามประเมินความเหมาะสมทางคลินิกแทนแพทย์'},
+  {n:'Task 2',tag:'dr',r:'เภสัชกรผู้ประสานงานกับแพทย์',t:'ร่างข้อความแจ้งแพทย์เจ้าของคำขอที่ต้องแก้ไข ระบุสิ่งที่ขาด',f:'ข้อความสั้นต่อคำขอ ไม่เกิน 4 บรรทัด สุภาพ',x:'บอกเฉพาะสิ่งที่ขาดตามเกณฑ์'},
+  {n:'Task 3',tag:'dr',r:'เลขานุการผู้อำนวยการ',t:'ร่างสรุปหน้าเดียวสำหรับคำขอที่ครบ เพื่อให้ผู้อนุมัติอ่านจบใน 1 นาที',f:'หัวข้อ: ยา · เหตุผล · ระยะเวลาและจุดประเมิน · ความครบของเอกสาร · ช่องลงนาม',x:'ไม่เขียนว่า "ควรอนุมัติ"'}
+ ],
+ verify:['คำขอ A ครบทุกข้อ ส่งต่อได้','คำขอ B ขาดผลแล็บ (ค)','คำขอ C ขาดระยะเวลา (จ) และสิทธิ์ไม่ครอบคลุมแต่ไม่มีหนังสือยินยอมชำระเงิน ขาดสองเรื่อง'],
+ round2:'ออกแบบ workflow ใหม่ที่ AI ตรวจความครบตั้งแต่แพทย์กรอก ก่อนส่งถึงเภสัชกร วาดเป็น flowchart ด้วย Canvas และระบุจุดที่คนต้องลงนาม',
+ skill:'Task 1 เป็น Skill "ตรวจความครบคำขอยานอกบัญชี"',
+ approver:'ผู้อำนวยการหรือผู้ได้รับมอบอำนาจ',
+ disc:'ถ้าทำเป็นแบบฟอร์มออนไลน์ ข้อมูลผู้ป่วยจะเก็บที่ไหน และใครเห็นได้บ้าง'
+},
+{
+ id:'c11', g:'svc', title:'เอกสารความรู้ผู้ป่วยจากแนวทางที่ตรวจแล้ว', who:'เภสัชกรบริการผู้ป่วย / งานให้คำปรึกษา',
+ why:'ทำสื่อให้ผู้ป่วยใช้เวลานาน ภาษาวิชาการเกินไป',
+ chain:[['สรุปสาระจาก source','ai'],['ปรับเป็นภาษาผู้ป่วย','dr'],['ตรวจข้อมูลเกินต้นทาง','ai'],['ทำอินโฟกราฟิก','dr'],['เภสัชกรอีกคนอ่านทวน','hu']],
+ h:{model:'รุ่นเร็วพอสำหรับเขียน · รุ่นคิดลึกสำหรับตรวจ',tools:'Canvas (ห้ามสร้างเป็นรูปภาพ เพราะภาษาไทยจะสะกดผิด)',hitl:'เภสัชกรอีกคนอ่านทวน · ทดลองให้ผู้ป่วย 2–3 คนอ่าน'},
+ ctx:`SOURCE: วิธีใช้ยาสูดชนิดกดพ่น (MDI) ฉบับฝึก รพ.ตัวอย่าง (ตรวจทานโดยเภสัชกรแล้ว)
+1. เปิดฝาครอบ เขย่าหลอดยา 4–5 ครั้ง
+2. หายใจออกให้สุด
+3. อมปากหลอดให้สนิท กดพ่น 1 ครั้งพร้อมสูดหายใจเข้าช้า ๆ ลึก ๆ
+4. กลั้นหายใจประมาณ 10 วินาที แล้วค่อย ๆ หายใจออก
+5. ถ้าแพทย์สั่งพ่นมากกว่า 1 ครั้ง ให้รอ 30–60 วินาทีก่อนพ่นครั้งต่อไป
+6. ถ้าเป็นยาสเตียรอยด์ ให้บ้วนปากด้วยน้ำหลังใช้ยา
+7. ทำความสะอาดปากกระบอกด้วยผ้าแห้งสัปดาห์ละครั้ง
+ควรรีบพบแพทย์เมื่อ: หอบเหนื่อยมากขึ้น พูดไม่เป็นประโยค หรือใช้ยาบรรเทาอาการบ่อยกว่าปกติ
+ผู้อ่าน: ผู้สูงอายุ`,
+ tasks:[
+  {n:'Task 1',tag:'dr',r:'เภสัชกรผู้เขียนสื่อสำหรับผู้สูงอายุ',t:'เขียนขั้นตอนใช้ยาใหม่เป็นภาษาที่ผู้สูงอายุเข้าใจ จาก source เท่านั้น',f:'ไม่เกิน 7 ข้อ ประโยคละไม่เกิน 15 คำ ตามด้วยกล่อง "ควรรีบพบแพทย์เมื่อ"',x:'ห้ามเพิ่มชื่อยา ขนาดยา หรือความถี่ที่ไม่มีใน source'},
+  {n:'Task 2',tag:'ai',r:'เภสัชกรผู้ตรวจสื่อ',t:'เทียบข้อความจาก Task 1 กับ source ทีละบรรทัด หาสิ่งที่เพิ่มเกิน ตกหล่น หรือความหมายเปลี่ยน',f:'ตาราง: บรรทัด · ปัญหา · แก้เป็น',x:'ถ้าไม่พบปัญหา ให้ยืนยันทีละข้อว่าตรง source'},
+  {n:'Task 3',tag:'dr',r:'นักออกแบบสื่อสุขภาพ',t:'ใช้ Canvas ทำอินโฟกราฟิก 1 หน้า A4 แนวตั้งจากข้อความที่ตรวจแล้ว',f:'หัวเรื่อง 1 บรรทัด · ขั้นตอนพร้อมไอคอน · กล่องเตือนสีส้ม · ตัวอักษรใหญ่',x:'เป็นหน้าเว็บที่มีตัวหนังสือจริง ไม่ใช่รูปภาพ'}
+ ],
+ verify:['AI มักเติม "วันละ 2 ครั้ง" หรือชื่อยาเอง ซึ่งไม่มีใน source','ขั้นที่ 5 ต้องคงเงื่อนไข "ถ้าแพทย์สั่งพ่นมากกว่า 1 ครั้ง"','ลองสั่งอีกแชตให้สร้างเป็นภาพ แล้วนับคำที่สะกดผิด'],
+ round2:'ทำอีกเวอร์ชันสำหรับญาติผู้ดูแล และเวอร์ชันภาษาอังกฤษ แล้วเทียบว่าข้อมูลยังตรง source',
+ skill:'Task 2 เป็น Skill "ตรวจสื่อเทียบ source" ใช้กับสื่อทุกชิ้น',
+ approver:'เภสัชกรผู้รับผิดชอบสื่อ · คณะกรรมการสื่อของโรงพยาบาล',
+ disc:'ถ้าแนบภาพสื่อเดิมของหน่วยเป็นตัวอย่างสไตล์ ผลลัพธ์จะเปลี่ยนอย่างไร'
+},
+{
+ id:'c12', g:'svc', title:'คำนวณค่ายาเบิกจ่ายตามสิทธิแทนการจดกระดาษ', who:'เภสัชกรบริการ / งานเบิกจ่าย',
+ why:'จดค่าใช้จ่ายลงกระดาษ เขียนทับที่เดิมจนอ่านยาก คำนวณคลาดเคลื่อน',
+ chain:[['ตรวจตารางรายการจ่าย','ai'],['คำนวณยอดเบิกตามเพดาน','ai'],['สร้างเครื่องคำนวณ','dr'],['เจ้าหน้าที่เบิกจ่ายตรวจ','hu']],
+ h:{model:'รุ่นเร็ว + ให้รันโค้ด',tools:'Code execution · Canvas สร้างเครื่องคำนวณ',hitl:'สุ่มคำนวณ 1 ราย · เจ้าหน้าที่เบิกจ่ายยืนยันอัตราจากประกาศจริง'},
+ ctx:`อัตราเบิก (อัตราสมมติเพื่อการฝึก ไม่ใช่อัตราจริงของกองทุนใด)
+ยา,ราคาต่อหน่วย_บาท,เพดานเบิก_หน่วยต่อ30วัน
+Drug-A 1 mg cap,45.00,120
+Drug-B 500 mg tab,22.50,120
+Drug-C 5 mg tab,3.20,60
+
+รายการจ่าย ต.ค. 2569 (รหัสผู้ป่วยสมมติ)
+รหัส,ยา,จำนวนจ่าย,จำนวนวัน
+P01,Drug-A 1 mg cap,120,30
+P01,Drug-B 500 mg tab,120,30
+P02,Drug-A 1 mg cap,150,30
+P02,Drug-C 5 mg tab,60,30
+P03,Drug-B 500 mg tab,240,60
+P04,Drug-A 1 mg cap,90,30
+P04,Drug-B 500 mg tab,120,30
+P05,Drug-C 5 mg tab,90,30
+หมายเหตุ: เพดานคิดตามจำนวนวันที่จ่าย (60 วัน = 2 เท่าของเพดาน 30 วัน)`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เจ้าหน้าที่ตรวจสอบการเบิกจ่ายยา',t:'คำนวณยอดเบิกได้และส่วนที่เกินเพดานของแต่ละรายการ',f:'ตาราง: รหัส · ยา · จำนวนจ่าย · เพดานตามจำนวนวัน · เบิกได้ (หน่วย) · เกิน (หน่วย) · ยอดเบิก (บาท) · ยอดเกิน (บาท) ตามด้วยยอดรวมรายคน',x:'รันโค้ดคำนวณ แสดงสูตร'},
+  {n:'Task 2',tag:'dr',r:'นักพัฒนาเครื่องมือห้องยา',t:'ใช้ Canvas สร้างเครื่องคำนวณยอดเบิกที่เลือกยา กรอกจำนวนและจำนวนวัน แล้วแสดงยอดเบิกและส่วนเกิน',f:'หน้าเว็บใช้บนมือถือ ภาษาไทย มีตารางอัตราแก้ไขได้ และตัวอย่างทดสอบ 2 กรณีพร้อมคำตอบ',x:'ไม่เก็บข้อมูลผู้ป่วย'},
+  {n:'Task 3',tag:'dr',r:'หัวหน้างานเบิกจ่าย',t:'สรุปรายการที่เกินเพดานพร้อมข้อเสนอว่าจะจัดการอย่างไร',f:'รายการสั้น: รหัส · ยา · เกินเท่าไร · ต้องตรวจสอบอะไรกับแพทย์หรือผู้ป่วย',x:'ไม่สรุปแทนว่าใครต้องจ่ายเอง'}
+ ],
+ verify:['P02 Drug-A จ่าย 150 เพดาน 120 เกิน 30 หน่วย = 1,350 บาท','P05 Drug-C จ่าย 90 เพดาน 60 เกิน 30 หน่วย = 96 บาท','P03 Drug-B จ่าย 240 ใน 60 วัน เพดาน 240 ไม่เกิน ถ้า AI ใช้เพดาน 120 ตรง ๆ ถือว่าพลาด'],
+ round2:'ทดสอบเครื่องคำนวณด้วยรายการ P03 และ P05 ว่าได้ตรงกับ Task 1 ไหม ถ้าไม่ตรง ให้สั่งแก้ในแชตเดิม',
+ skill:'Task 1 เป็น Skill "คำนวณยอดเบิกตามเพดาน"',
+ approver:'หัวหน้างานเบิกจ่าย',
+ disc:'ถ้าอัตราเบิกเปลี่ยนทุกปีงบประมาณ ควรเก็บตารางอัตราไว้ที่ไหนให้ AI อ่านฉบับล่าสุดเสมอ'
+},
+{
+ id:'c13', g:'mgmt', title:'จากประชุมทีมสู่การติดตามงาน', who:'หัวหน้าฝ่าย / เลขานุการคณะกรรมการ',
+ why:'ประชุมบ่อย สรุปช้า มติไม่มีผู้รับผิดชอบชัด งานหลุด',
+ chain:[['จัดโครงบันทึกจากข้อความถอดเสียง','ai'],['สรุปมติ ผู้รับผิดชอบ กำหนดส่ง','ai'],['ร่างบันทึกข้อความ','dr'],['ทำรายการติดตาม','dr'],['ประธานรับรอง','hu']],
+ h:{model:'รุ่นเร็วพอ · รุ่นคิดลึกสำหรับหนังสือราชการ',tools:'ถอดเสียงด้วยเครื่องมือที่องค์กรอนุญาต · Canvas ส่งออก Google Docs',hitl:'ตัดชื่อบุคคลก่อนวางลง AI · ประธานรับรองรายงาน'},
+ ctx:`ข้อความถอดเสียงประชุมคณะทำงานพัฒนาระบบยา 28 ต.ค. 2569 (ตัดชื่อบุคคลแล้ว ใช้ตำแหน่งแทน)
+ประธาน: วาระแรกเรื่องเวลารอรับยาช่วงเที่ยง ไตรมาสนี้เกิน 30 นาทีสองเดือน
+หัวหน้างาน OPD: ช่วง 12 ถึง 13 คนเหลือสองคน เสนอเหลื่อมเวลาพักเป็นสองรอบ
+ประธาน: เห็นด้วย ให้หัวหน้างาน OPD ทำตารางใหม่ เริ่มใช้ 1 ธันวา
+หัวหน้างานคลัง: วาระสอง ยาขาดคราวหกรายการเดือนกันยา ส่วนใหญ่ยาฉีดปฏิชีวนะ
+ประธาน: ให้คลังทำรายงานจุดสั่งซื้อรายสัปดาห์ เสนอในประชุมครั้งหน้า
+เภสัชกรคลินิก: วาระสาม การทำ med rec ภายใน 24 ชั่วโมงยังไม่ถึงเป้าแปดสิบ ควรมีระบบเตือน
+ประธาน: เรื่องระบบเตือนต้องคุยกับไอที ใครว่างช่วยประสานหน่อย
+ที่ประชุม: (ไม่มีผู้ตอบ)
+ประธาน: วาระสุดท้าย ฝ่ายจะใช้ AI สรุปรายงานประชุม ห้ามใส่ชื่อผู้ป่วย ให้ทุกคนใช้บัญชีองค์กร
+ประธาน: ประชุมครั้งหน้า 25 พฤศจิกา`,
+ tasks:[
+  {n:'Task 1',tag:'ai',r:'เลขานุการคณะทำงานที่จดรายงานการประชุมแบบสรุปมติ',t:'สรุปการประชุมเป็นวาระ แต่ละวาระมีสาระ มติ ผู้รับผิดชอบ และกำหนดเสร็จ',f:'ตาราง: วาระ · สาระ 1–2 บรรทัด · มติ · ผู้รับผิดชอบ · กำหนดเสร็จ',x:'ถ้าข้อความไม่ระบุผู้รับผิดชอบหรือกำหนดเสร็จ ให้ใส่ "ยังไม่ระบุ" ห้ามเดา'},
+  {n:'Task 2',tag:'dr',r:'เลขานุการคณะทำงานในโรงพยาบาลรัฐ',t:'ร่างรายงานการประชุมแบบบันทึกข้อความราชการจาก Task 1',f:'หัวกระดาษบันทึกข้อความ · ผู้เข้าประชุม (ตามตำแหน่ง) · วาระ 1–4 · เลิกประชุม · ใช้เลขไทย',x:'ใช้เฉพาะเนื้อหาในข้อความถอดเสียง'},
+  {n:'Task 3',tag:'dr',r:'ผู้ช่วยติดตามงานของประธาน',t:'ทำรายการติดตามงานสำหรับส่งในกลุ่ม LINE ก่อนประชุมครั้งหน้า',f:'รายการเช็กลิสต์: งาน · ผู้รับผิดชอบ · กำหนด · สถานะ (ว่างไว้)',x:'งานที่ยังไม่มีผู้รับผิดชอบให้ขึ้นบนสุด'}
+ ],
+ verify:['วาระ 3 ระบบเตือน med rec ไม่มีผู้รับผิดชอบ และไม่มีกำหนดเสร็จ AI ต้องใส่ "ยังไม่ระบุ" ไม่ใช่ใส่เภสัชกรคลินิกเอง','วาระ 2 กำหนดเสร็จคือ "ประชุมครั้งหน้า" = 25 พ.ย. 2569','วาระ 1 เริ่มใช้ 1 ธ.ค. 2569'],
+ round2:'สั่งให้ใช้ Canvas จัดรูปแบบรายงานให้สวยงามแล้วส่งออก Google Docs และร่างอีเมลแจ้งผู้รับผิดชอบแต่ละคน',
+ skill:'Task 1–3 รวมเป็น Skill "รายงานประชุม + ติดตามงาน" ใช้ทุกการประชุม',
+ approver:'ประธานคณะทำงาน',
+ disc:'ถ้าตั้ง Agent ให้ส่งรายการติดตามอัตโนมัติก่อนประชุม 3 วัน ต้องระวังอะไร'
+},
+{
+ id:'c14', g:'mgmt', title:'จากปัญหาหน้างานสู่โครงการ QI หรืองานวิจัย', who:'หัวหน้างาน / เภสัชกรที่อยากทำวิจัยพัฒนางาน',
+ why:'อยากทำวิจัยจากงานที่รับผิดชอบ แต่ไม่รู้จะเริ่มอย่างไร เก็บและวิเคราะห์ข้อมูลเองใช้เวลานาน',
+ chain:[['ตั้งคำถามจากปัญหา','dr'],['ทบทวนวรรณกรรม','ai'],['ออกแบบการเก็บข้อมูลและตัวชี้วัด','dr'],['ร่างโครงร่าง 1 หน้า','dr'],['ที่ปรึกษาหรือ EC ทบทวน','hu']],
+ h:{model:'รุ่นคิดลึก',tools:'Deep Research สำหรับทบทวนวรรณกรรม · Gemini Notebook สำหรับอ่าน paper ที่เลือกแล้ว',hitl:'เปิดอ่านทุก paper ที่ AI อ้าง · ที่ปรึกษาและคณะกรรมการจริยธรรมการวิจัยทบทวน'},
+ ctx:`ปัญหาหน้างาน (สมมติ)
+- ร้อยละ medication reconciliation ภายใน 24 ชม. หลังรับไว้ในโรงพยาบาล: ก.ค. 72% · ส.ค. 76% · ก.ย. 81% (เป้า ≥80%)
+- หอผู้ป่วยอายุรกรรม 4 หอ เภสัชกรคลินิก 3 คน ไม่มีเวรวันหยุด
+- ผู้ป่วยรับใหม่ช่วงศุกร์บ่ายถึงอาทิตย์ทำ med rec ช้าที่สุด
+- มีข้อมูลรายผู้ป่วยในระบบ (ต้องขออนุมัติก่อนใช้)
+ทรัพยากร: เวลา 6 เดือน · ไม่มีงบจ้างเพิ่ม · ใช้ AI บัญชีองค์กรได้`,
+ tasks:[
+  {n:'Task 1',tag:'dr',r:'อาจารย์ที่ปรึกษางานวิจัยพัฒนางานเภสัชกรรม',t:'เสนอคำถามวิจัยหรือเป้าหมาย QI 3 แบบจากปัญหานี้ ตั้งแต่ทำง่ายไปถึงทำยาก',f:'ตาราง: แบบ · คำถามหรือเป้าหมาย (รูปแบบ PICO หรือ SMART) · รูปแบบการศึกษา · ข้อมูลที่ต้องใช้ · ความเป็นไปได้ใน 6 เดือน',x:'ถ้าข้อมูลไม่พอ ให้ถามกลับไม่เกิน 3 ข้อก่อนตอบ'},
+  {n:'Task 2',tag:'ai',r:'บรรณารักษ์การแพทย์',t:'ทบทวนวรรณกรรมเรื่องปัจจัยและวิธีเพิ่มอัตรา medication reconciliation ในโรงพยาบาล',f:'สรุป 5 งาน: ผู้แต่ง ปี · วิธี · ผลหลัก · DOI หรือ PMID',x:'ใช้ Deep Research หรือการค้นเว็บ ถ้าหา DOI ไม่ได้ให้เขียนว่า "ยังไม่ได้ยืนยัน" ห้ามแต่งเลขอ้างอิง'},
+  {n:'Task 3',tag:'dr',r:'ผู้เขียนโครงร่าง QI',t:'ร่างโครงร่าง 1 หน้าจากแบบที่กลุ่มเลือกใน Task 1',f:'ชื่อโครงการ · ปัญหา · เป้าหมาย · วิธี (PDSA 2 รอบ) · ตัวชี้วัด · ข้อมูลที่ต้องขออนุมัติ · ระยะเวลา',x:'แยกให้ชัดว่าส่วนไหนเป็น QI ส่วนไหนต้องขอจริยธรรมการวิจัย'}
+ ],
+ verify:['เปิด DOI หรือ PMID ทุกตัวว่ามีจริงและเนื้อหาตรง ถ้าเจอเลขที่เปิดไม่ได้ คือจุดที่ AI ผิด','ข้อมูลเดือน ก.ย. 81% ผ่านเป้าแล้ว AI ควรชี้ว่าต้องดูต่ออีกหลายเดือนก่อนสรุปว่าปัญหาหมด','การใช้ข้อมูลรายผู้ป่วยต้องขออนุมัติก่อน AI ไม่ควรแนะนำให้ส่งออกข้อมูลไปบัญชีส่วนตัว'],
+ round2:'นำ paper ที่ยืนยันแล้ว 3–5 ฉบับใส่ Gemini Notebook แล้วถามว่ามาตรการไหนเหมาะกับบริบทที่ไม่มีเวรวันหยุด พร้อมอ้างอิงย่อหน้าต้นทาง',
+ skill:'Task 2 เป็น Skill "ทบทวนวรรณกรรมพร้อมยืนยัน DOI"',
+ approver:'ที่ปรึกษาโครงการ · คณะกรรมการจริยธรรมการวิจัยในคน (ถ้าเป็นงานวิจัย)',
+ disc:'งานไหนในโครงการนี้ที่ห้ามให้ AI ทำแทนเด็ดขาด'
+}
+];
+
+const TAGNAME = {ai:'AI วิเคราะห์', dr:'AI ช่วยร่าง', hu:'คนทำหรือคนตัดสิน'};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function promptText(p){
+  return 'บทบาท (Role): '+p.r+'\nงาน (Task): '+p.t+'\nรูปแบบผลลัพธ์ (Format): '+p.f+'\nข้อกำหนดเพิ่มเติม: '+p.x;
+}
+function render(){
+  const filters = document.getElementById('filters');
+  const groups = [['all','ทั้งหมด']].concat(Object.entries(G));
+  filters.innerHTML = groups.map(([k,v])=>'<button type="button" data-g="'+k+'" aria-pressed="'+(k==='all')+'">'+esc(v)+'</button>').join('');
+  const map = document.getElementById('mapgrid');
+  map.innerHTML = CASES.map((c,i)=>'<a href="#'+c.id+'" data-g="'+c.g+'"><span class="n">'+(i+1)+'</span><span><b>'+esc(c.title)+'</b><small>'+esc(G[c.g])+' · '+c.tasks.length+' task</small></span></a>').join('');
+  const host = document.getElementById('cases');
+  host.innerHTML = CASES.map((c,i)=>{
+    const chain = c.chain.map((t,k)=>'<div class="t"><b>ขั้น '+(k+1)+'</b><span>'+esc(t[0])+'</span><span><span class="tag '+t[1]+'">'+TAGNAME[t[1]]+'</span></span></div>').join('');
+    const tasks = c.tasks.map((p,k)=>'<div class="prompt"><div class="ph"><span>'+esc(p.n)+'</span><span class="tag '+p.tag+'">'+TAGNAME[p.tag]+'</span></div>'+
+      '<div class="rtf"><div class="R"><i>R</i><span>'+esc(p.r)+'</span></div><div class="T"><i>T</i><span>'+esc(p.t)+'</span></div><div class="F"><i>F</i><span>'+esc(p.f)+'</span></div><div class="X"><i>+</i><span>'+esc(p.x)+'</span></div></div>'+
+      '<div class="actions">'+(k===0?'<button class="copy" type="button" data-c="'+c.id+'" data-k="'+k+'" data-mode="both">คัดลอก Prompt + Context</button>':'')+'<button class="copy'+(k===0?' alt':'')+'" type="button" data-c="'+c.id+'" data-k="'+k+'" data-mode="prompt">คัดลอก Prompt</button></div></div>').join('');
+    return '<article class="case" id="'+c.id+'" data-g="'+c.g+'">'+
+      '<div class="case-h"><div class="n">'+(i+1)+'</div><div><div class="g">'+esc(G[c.g])+'</div><h3>'+esc(c.title)+'</h3><p>'+esc(c.who)+' · '+esc(c.why)+'</p></div></div>'+
+      '<div class="case-b">'+
+        '<div><h4>Workflow <span class="k">TASK ต่อกัน</span></h4><div class="chain">'+chain+'</div></div>'+
+        '<div><h4>Harness ที่แนะนำ</h4><div class="harness"><div><b>MODEL</b>'+esc(c.h.model)+'</div><div><b>TOOLS</b>'+esc(c.h.tools)+'</div><div><b>HUMAN IN THE LOOP</b>'+esc(c.h.hitl)+'</div></div></div>'+
+        '<div><h4>Context จำลอง</h4><pre class="ctx" tabindex="0">'+esc(c.ctx)+'</pre><div class="actions" style="margin-top:8px"><button class="copy alt" type="button" data-c="'+c.id+'" data-mode="ctx">คัดลอก Context</button></div><p class="ctxnote">ข้อมูลสมมติทั้งหมด มีกับดักซ่อนอยู่ให้กลุ่มหา</p></div>'+
+        '<div><h4>Prompt แบบ R–T–F</h4><div style="display:grid;gap:10px">'+tasks+'</div><p class="ctxnote">ทำ Task 2 และ 3 ต่อในแชตเดิม AI จะยังเห็น Context และผลของ Task ก่อนหน้า</p></div>'+
+        '<div class="verify"><h4>หา 1 จุดที่ AI ผิด</h4><p style="margin:0 0 4px">ตรวจผลก่อนเปิดเฉลย แล้วเทียบกันในกลุ่ม</p><details class="ans"><summary>เปิดเฉลยกับดัก</summary><ul>'+c.verify.map(v=>'<li>'+esc(v)+'</li>').join('')+'</ul></details></div>'+
+        '<div class="prompt"><div class="ph"><span>Round 2</span><span class="tn">ปรับต่อในแชตเดิม</span></div><p style="margin:0">'+esc(c.round2)+'</p><div class="actions"><button class="copy alt" type="button" data-c="'+c.id+'" data-mode="r2">คัดลอก Round 2</button></div></div>'+
+        '<div class="two"><div class="mini"><h4>ทำเป็น Skill</h4><p>'+esc(c.skill)+'</p></div><div class="mini"><h4>ใครอนุมัติ</h4><p>'+esc(c.approver)+'</p></div></div>'+
+        '<div class="mini disc"><h4>คุยกันในกลุ่ม</h4><ul><li>ชอบอะไรในผลลัพธ์ และไม่ชอบอะไร</li><li>ถ้าเป็นงานของหน่วยเรา จะปรับ R, T หรือ F ตรงไหน</li><li>'+esc(c.disc)+'</li></ul></div>'+
+        '<a class="top" href="#map">กลับแผนที่ workflow</a>'+
+      '</div></article>';
+  }).join('');
+}
+render();
+const byId = Object.fromEntries(CASES.map(c=>[c.id,c]));
+const toast = document.getElementById('toast'); let tt;
+function say(m){toast.textContent=m;toast.hidden=false;clearTimeout(tt);tt=setTimeout(()=>{toast.hidden=true;},1800);}
+document.addEventListener('click',e=>{
+  const fb = e.target.closest('#filters button');
+  if(fb){
+    const g = fb.dataset.g;
+    document.querySelectorAll('#filters button').forEach(b=>b.setAttribute('aria-pressed',String(b===fb)));
+    document.querySelectorAll('#mapgrid a, .case').forEach(el=>{el.hidden = !(g==='all'||el.dataset.g===g);});
+    return;
+  }
+  const b = e.target.closest('button.copy'); if(!b) return;
+  const c = byId[b.dataset.c]; const mode = b.dataset.mode; let txt='';
+  if(mode==='ctx') txt = c.ctx;
+  else if(mode==='r2') txt = c.round2;
+  else { const p = c.tasks[+b.dataset.k]; txt = promptText(p); if(mode==='both') txt += '\n---\n'+c.ctx; }
+  const label = b.textContent;
+  const done = ()=>{b.classList.add('ok');b.textContent='คัดลอกแล้ว';say('คัดลอกแล้ว วางในแอป AI ได้เลย');setTimeout(()=>{b.classList.remove('ok');b.textContent=label;},1600);};
+  const fallback = ()=>{const pre = b.closest('.case').querySelector('pre.ctx');const r=document.createRange();r.selectNodeContents(pre);const s=getSelection();s.removeAllRanges();s.addRange(r);say('คัดลอกอัตโนมัติไม่ได้ เลือกข้อความให้แล้ว');};
+  try{ navigator.clipboard.writeText(txt).then(done,fallback); }catch(err){ fallback(); }
+});
+</script>
+
+</body>
+</html>
