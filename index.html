@@ -89,12 +89,14 @@ a{color:var(--accent)}
 .map small{color:var(--muted)}
 /* case card */
 .case{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-top:18px;overflow:hidden;scroll-margin-top:12px}
-.case-h{padding:16px 16px 12px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.case-h{padding:16px 16px 12px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:start}
 .case-h .n{width:46px;height:46px;border-radius:12px;background:var(--navy);color:var(--navy-ink);font-family:var(--display);font-weight:700;font-size:1.15rem;display:grid;place-items:center}
 .case-h .g{font-family:var(--display);font-weight:600;font-size:.8rem;letter-spacing:.06em;color:var(--honey-ink)}
 .case-h h3{margin:2px 0 4px;font-size:1.22rem}
 .case-h p{margin:0;color:var(--muted);font-size:.95rem}
-.case-b{padding:14px 16px 18px;display:grid;gap:16px}
+.case-b{padding:14px 16px 18px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.case-b>*,.case-h>*,.prompt>*,.rtf span,.chain .t,.harness>div{min-width:0}
+.rtf span,.chain .t span,.harness div,.mini p,.verify li{overflow-wrap:anywhere}
 .case-b h4{margin:0 0 8px;font-size:1rem;display:flex;align-items:center;gap:8px}
 .case-b h4 .k{font-size:.75rem;letter-spacing:.06em;color:var(--muted);font-weight:600}
 .chain{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
@@ -104,13 +106,13 @@ a{color:var(--accent)}
 @media (max-width:620px){.harness{grid-template-columns:1fr}}
 .harness div{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.9rem}
 .harness b{display:block;font-family:var(--display);font-size:.78rem;letter-spacing:.06em;color:var(--honey-ink)}
-pre.ctx{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--mono);font-size:.8rem;line-height:1.55;overflow-x:auto;white-space:pre;max-height:340px;overflow-y:auto}
+pre.ctx{margin:0;background:var(--code-bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--mono);font-size:.8rem;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;max-height:420px;overflow-y:auto}
 .ctxnote{font-size:.85rem;color:var(--muted);margin:6px 0 0}
-.prompt{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px}
+.prompt{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
 .prompt .ph{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--display);font-weight:600}
 .prompt .ph .tn{color:var(--muted);font-size:.85rem}
 .rtf{display:grid;gap:6px;font-size:.93rem}
-.rtf div{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start}
+.rtf div{display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:start}
 .rtf i{font-style:normal;font-family:var(--display);font-weight:700;font-size:.8rem;width:26px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff}
 .rtf .R i{background:var(--r)} .rtf .T i{background:var(--t)} .rtf .F i{background:var(--f)} .rtf .X i{background:var(--x)}
 :root[data-theme="dark"] .rtf i{color:#0F1522}
